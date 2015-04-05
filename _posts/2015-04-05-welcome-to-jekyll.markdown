@@ -1,0 +1,109 @@
+---
+layout: post
+title:  "Eloquent"
+date:   2015-04-05 13:18:01
+categories: jekyll update
+comments: true
+---
+
+What am I doing here?
+---------------------
+As part of my objectives, I decided to write a monthly blog post concerning a new technology or framework I have used in a personal project, and share it on the portal. I have not decided which way I’m exactly going with this blog. It will probably be a bunch of super easy tutorials to get you started on a technology, same way I started using them. I’m also not a PHP expert, especially not object oriented php. I’m a Java developer, so sometimes some PHP concepts are new to me too. I try to explain stuff the way I learned it as someone with no experience in the language, so often I don’t go heavy on the details, since I don’t know them myself.
+
+The project
+---------------------
+The project in which I’m using these technologies and frameworks is basically a CRUD web application. I decided to use a PHP for the backend and AngularJS for the front-end, although that’s not completely decided. REST will be used for communication between the two. I could have also used Laravel for the front and back-end, but I rather have the two completely separated, to minimize the hassle when I would decide to use a different technology on either side.
+
+Eloquent
+---------------------
+The first blog post is going to be about Eloquent. I had been searching for a nice database framework for PHP and found out that I could use Eloquent. the database part of the Laravel framework as a standalone framework without all the rest of Laravel. I had already been dabbling in Laravel and had noticed that the database part was pretty easy to use.
+
+Eloquent is an ORM framework and takes care of the database connection and the mapping of your tables to your models. The way this is implemented actually makes for some very readable code.
+
+An example of the configuration:
+
+{% highlight php %}
+  <?php
+
+  use Illuminate\Database\Capsule\Manager as Capsule;
+
+  $capsule = new Capsule;
+
+  $capsule->addConnection([
+     'driver' => 'mysql',
+     'host' => '127.0.0.1',
+     'database' => 'db-name',
+     'username' => 'root',
+     'charset' => 'utf8',
+     'collation' => 'utf8_general_ci'
+  ]);
+
+  $capsule->bootEloquent();
+{% endhighlight %}
+
+This is all you need to configure your data source. After this you just have to create a model that corresponds with a table in your database. In my case, there was a table called Movies, so I created a model called Movie and made it extend from the Eloquent class.
+Like this:
+
+{% highlight php %}
+  <?php
+
+  namespace models;
+
+  use Illuminate\Database\Eloquent\Model as Eloquent;
+
+  class Movie extends Eloquent {
+
+     protected $fillable = array('id', 'userId', 'movie_name', 'rating', 'status');
+
+  }
+{% endhighlight %}
+
+The fillable array marks which values from the database you want automatically inserted into your new Movie object. This is to make sure that for instance a password column can’t just automatically be retrieved from the database. The fillable array just whitelists the columns that should be retrieved.
+
+When you have this, you’re ready to start persisting data to the database. I decided for myself to follow the same layering I would do in a Java project. This is of course a personal choice because if you see how we use Eloquent to do some operations to the database, you’ll see that you can organize your code in a few different ways, each with its own benefits. So I created a MovieDao with a bunch of functions that I could use:
+
+{% highlight php %}
+  <?php
+
+  namespace database;
+
+  use models\Movie;
+
+  class MovieDao {
+
+     function getMoviesForUser($userID) {
+         return Movie::where('userId', '=', $userID)->get();
+     }
+
+     function saveOrUpdate($movie) {
+         return $movie->save();
+     }
+
+     function delete($movieId) {
+         return Movie::find($movieId)->delete();
+     }
+
+     function getAllWatchedMoviesForUser($userId) {
+         return Movie::where('userId = ? and status = 0', array($userId))->get();
+     }
+
+     function getAllWishedMoviesForUser($userId) {
+         return Movie::where('userId = ? and status = 1', array($userId))->get();
+     }
+  }
+{% endhighlight %}
+
+As you can see in the code, you could just as well leave functions like saveOrUpdate out of a class like this, and just call $movie->save(); wherever you need to, but I like my database stuff centered in one place, so opted for this solution. When you get a Movie object from the database, you can just get the different values from the object like this:
+
+{% highlight php %}
+$movie->id;
+$movie->name;
+{% endhighlight %}
+
+Assuming that your table has a column called ‘id’ and ‘name’.
+
+As you can see, Eloquent is super easy to use and produces very readable code. There is of course a ton more you can do with this framework that I haven’t mentioned, but you can read all about it here:
+
+[Eloquent documentation]: http://laravel.com/docs/4.2/eloquent
+
+I hope this was somewhat informative and for questions and comments, you can always send me an e-mail @ ivar.vanhartingsveldt@cegeka.be or leave a message in the comments section.

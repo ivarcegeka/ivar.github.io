@@ -1,0 +1,11 @@
+# Site settings
+title: Ivar's Blog
+email: ivar.vanhartingsveldt@cegeka.be
+description: Yet another tech blog.
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://yourdomain.com" # the base hostname & protocol for your site
+twitter_username: robvanbobbert
+github_username:  ivarcegeka
+
+# Build settings
+markdown: kramdown
