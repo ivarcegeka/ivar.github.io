@@ -104,6 +104,6 @@ Assuming that your table has a column called ‘id’ and ‘name’.
 
 As you can see, Eloquent is super easy to use and produces very readable code. There is of course a ton more you can do with this framework that I haven’t mentioned, but you can read all about it here:
 
-[Eloquent documentation]: http://laravel.com/docs/4.2/eloquent
+[Eloquent Documentation](http://laravel.com/docs/4.2/eloquent)
 
 I hope this was somewhat informative and for questions and comments, you can always send me an e-mail @ ivar.vanhartingsveldt@cegeka.be or leave a message in the comments section.
